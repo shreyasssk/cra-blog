@@ -1,8 +1,8 @@
-const express = require('express');
+const router = require('express').Router();
 const Posts = require('../models/posts');
-const router = express.Router();
+const verify = require('../components/verifyToken');
 
-router.get('/', async (req, res) => {
+router.get('/', verify, async (req, res) => {
 	try {
 		const posts = await Posts.find().sort({ createdAt: 'desc' });
 		res.status(201).send(posts);

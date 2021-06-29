@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+const verify = require('./components/verifyToken');
+
 const connectToDB = async () => {
 	try {
 		await mongoose.connect(process.env.MONGO_URI, {
@@ -21,8 +23,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use('/auth', require('./routes/auth'));
 app.use('/posts', require('./routes/posts'));
 app.use('/comments', require('./routes/comment'));
+
+app.get('/currentuser', verify, (req, res) => {
+	res.send(req.user);
+});
 
 PORT = 4000;
 app.listen(PORT, () => {
