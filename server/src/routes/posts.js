@@ -12,11 +12,12 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/create', async (req, res) => {
-	const { title, desc, markdown } = req.body;
+	const { title, desc, markdown, link } = req.body;
 	const post = new Posts({
 		title,
 		desc,
 		markdown,
+		link,
 	});
 	try {
 		const newPost = await post.save();

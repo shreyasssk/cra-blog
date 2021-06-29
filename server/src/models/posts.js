@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
-const marked = require('marked');
-const createDomPurifier = require('dompurify');
-const { JSDOM } = require('jsdom');
-const dompurify = createDomPurifier(new JSDOM().window);
 
 const postSchema = new mongoose.Schema(
 	{
+		link: {
+			type: String,
+		},
 		title: {
 			type: String,
 			required: true,
@@ -22,9 +21,6 @@ const postSchema = new mongoose.Schema(
 			required: true,
 			default: Date.now,
 		},
-		sanitizedHtml: {
-			type: String,
-		},
 	},
 
 	{
@@ -37,12 +33,5 @@ const postSchema = new mongoose.Schema(
 		},
 	}
 );
-
-postSchema.pre('validate', function (next) {
-	if (this.markdown) {
-		this.sanitizedHtml = dompurify.sanitize(marked(this.markdown));
-	}
-	next();
-});
 
 module.exports = mongoose.model('Post', postSchema);

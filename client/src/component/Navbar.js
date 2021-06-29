@@ -6,9 +6,7 @@ const NavBar = () => {
 			className="navbar navbar-expand-lg navbar-light sticky-top"
 			style={{ backgroundColor: '#e3f2fd' }}
 		>
-			<a className="navbar-brand">
-				{window.location.pathname.toLocaleUpperCase().split('/')}
-			</a>
+			<a className="navbar-brand">BLOG WEBSITE</a>
 			<button
 				className="navbar-toggler"
 				type="button"
@@ -30,6 +28,9 @@ const NavBar = () => {
 					</Link>
 					<Link to="/compose">
 						<li className="nav-item nav-link">Compose</li>
+					</Link>
+					<Link to="/admin">
+						<li className="nav-item nav-link">Admin</li>
 					</Link>
 				</ul>
 			</div>

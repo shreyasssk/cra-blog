@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import {
 	Container,
 	Col,
@@ -13,18 +14,28 @@ import ReactMarkDown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
+import NavBar from '../Navbar';
 import fetchPost from '../api/fetchPost';
 
-import NavBar from '../Navbar';
-
-const ComposePage = () => {
+const EditPost = () => {
 	const [formImage, setFormImage] = useState('');
 	const [formTitle, setFormTitle] = useState('');
 	const [formDesc, setFormDesc] = useState('');
 	const [formMarkdown, setFormMarkdown] = useState('');
+	const location = useLocation();
+	const history = useHistory();
+	const x = location.state;
+
+	useEffect(() => {
+		setFormImage(x.link);
+		setFormTitle(x.title);
+		setFormDesc(x.desc);
+		setFormMarkdown(x.markdown);
+	}, [x]);
 
 	const onFormSubmit = async (e) => {
-		var data = {
+		history.push('/admin');
+		var payload = {
 			link: formImage,
 			title: formTitle,
 			desc: formDesc,
@@ -32,16 +43,18 @@ const ComposePage = () => {
 		};
 
 		try {
-			const sentData = await fetchPost.post('/posts/create', data);
-			console.log(sentData.data);
+			const { data } = await fetchPost.post(
+				`/posts/${x.id}/update`,
+				payload
+			);
+			console.log('Post Updated!');
 		} catch (err) {
-			console.log('Unable to send post', err);
+			console.log('Unable to update post', err);
 		}
-		console.log(data);
 	};
 
 	return (
-		<Container fluid className="main-content-container px-4">
+		<Container fluid>
 			<NavBar />
 			<br />
 			<Row>
@@ -50,7 +63,7 @@ const ComposePage = () => {
 						style={{ backgroundColor: '#f8f8ff' }}
 						className="jumbotron card jumbotron-fluid"
 					>
-						<h1 className="display-4">Compose Post</h1>
+						<h1 className="display-4">Edit Post</h1>
 					</div>
 				</Col>
 			</Row>
@@ -104,7 +117,8 @@ const ComposePage = () => {
 								/>
 							</div>
 							<br />
-							<Button type="submit" theme="dark">
+
+							<Button type="submit" size="sm" theme="dark">
 								Submit
 							</Button>
 						</Form>
@@ -120,14 +134,18 @@ const ComposePage = () => {
 						<h1 className="display-4">Blog Preview</h1>
 						<br />
 
-						<img className="bg-img" src={formImage} alt="" />
+						<img
+							className="bg-img"
+							src={formImage || x.link}
+							alt=""
+						/>
 						<br />
 						<br />
 						<p>Created On: 2021-06-28</p>
-						<h1>{formTitle}</h1>
-						<p>{formDesc}</p>
+						<h1>{formTitle || x.title}</h1>
+						<p>{formDesc || x.desc}</p>
 						<ReactMarkDown
-							children={formMarkdown}
+							children={formMarkdown || x.markdown}
 							components={Component}
 						/>
 					</div>
@@ -154,4 +172,4 @@ const Component = {
 	},
 };
 
-export default ComposePage;
+export default EditPost;
