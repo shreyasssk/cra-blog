@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Posts = require('../models/posts');
 const verify = require('../components/verifyToken');
 
-router.get('/', verify, async (req, res) => {
+router.get('/', async (req, res) => {
 	try {
 		const posts = await Posts.find().sort({ createdAt: 'desc' });
 		res.status(201).send(posts);
@@ -11,7 +11,7 @@ router.get('/', verify, async (req, res) => {
 	}
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create', verify, async (req, res) => {
 	const { title, desc, markdown, link } = req.body;
 	const post = new Posts({
 		title,
@@ -57,7 +57,7 @@ router.get('/:id', async (req, res) => {
 // 		});
 // });
 
-router.post('/:id/update', async (req, res) => {
+router.post('/:id/update', verify, async (req, res) => {
 	const { id } = req.params;
 
 	if (!req.body) {
@@ -86,7 +86,7 @@ router.post('/:id/update', async (req, res) => {
 // 	}
 // });
 
-router.post('/:id/delete', async (req, res) => {
+router.post('/:id/delete', verify, async (req, res) => {
 	const { id } = req.params;
 	try {
 		const removedPost = await Posts.findByIdAndDelete(id);

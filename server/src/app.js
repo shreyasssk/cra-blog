@@ -2,8 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
-const verify = require('./components/verifyToken');
+const cookieSession = require('cookie-session');
 
 const connectToDB = async () => {
 	try {
@@ -22,14 +21,15 @@ connectToDB();
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(
+	cookieSession({
+		signed: false,
+	})
+);
 
 app.use('/auth', require('./routes/auth'));
 app.use('/posts', require('./routes/posts'));
 app.use('/comments', require('./routes/comment'));
-
-app.get('/currentuser', verify, (req, res) => {
-	res.send(req.user);
-});
 
 PORT = 4000;
 app.listen(PORT, () => {
