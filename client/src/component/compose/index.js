@@ -37,7 +37,10 @@ const ComposePage = ({ currentUser }) => {
 		};
 
 		try {
-			const sentData = await fetchPost.post('/posts/create', data);
+			const sentData = await fetchPost.post(
+				`/posts/create/${currentUser.id}`,
+				data
+			);
 			console.log(sentData.data);
 		} catch (err) {
 			console.log('Unable to send post', err);

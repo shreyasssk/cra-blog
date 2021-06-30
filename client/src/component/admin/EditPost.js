@@ -17,6 +17,7 @@ import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import fetchPost from '../api/fetchPost';
 
 const EditPost = ({ currentUser }) => {
+	console.log('From Edit post', currentUser);
 	const [formImage, setFormImage] = useState('');
 	const [formTitle, setFormTitle] = useState('');
 	const [formDesc, setFormDesc] = useState('');

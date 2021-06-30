@@ -10,7 +10,9 @@ const AdminDashboard = ({ currentUser }) => {
 
 	useEffect(() => {
 		const getPosts = async () => {
-			const { data } = await fetchPost.get('/posts');
+			const { data } = await fetchPost.get(
+				`/posts/${currentUser.id}/currentuser`
+			);
 			setPostData(data);
 		};
 		getPosts();

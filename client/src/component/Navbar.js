@@ -46,6 +46,9 @@ const NavBar = ({ currentUser }) => {
 					<Link onClick={setLogout}>
 						<li className="btn btn-danger">Logout</li>
 					</Link>
+					<li className="nav-item nav-link">
+						User: {currentUser.name}
+					</li>
 				</ul>
 			);
 		}
