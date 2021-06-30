@@ -3,15 +3,16 @@ import './dashboard.css';
 import { Container, Row, Col, Card, CardBody, Button } from 'shards-react';
 import { Link } from 'react-router-dom';
 
-import NavBar from '../Navbar';
 import fetchPost from '../api/fetchPost';
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ currentUser }) => {
 	const [postData, setPostData] = useState([]);
 
 	useEffect(() => {
 		const getPosts = async () => {
-			const { data } = await fetchPost.get('/posts');
+			const { data } = await fetchPost.get(
+				`/posts/${currentUser.id}/currentuser`
+			);
 			setPostData(data);
 		};
 		getPosts();
@@ -24,6 +25,29 @@ const AdminDashboard = () => {
 			console.log('Post deleted!');
 		};
 		deletedPost();
+	};
+
+	const isLoggedIn = () => {
+		return (
+			<div
+				style={{ backgroundColor: '#f8f8ff' }}
+				className="jumbotron card jumbotron-fluid"
+			>
+				<h1 className="display-4">Oops...</h1>
+				<h3>You have to be a registered user to access this page</h3>
+				<Row>
+					<Link
+						to="/login"
+						className="mr-1 btn btn-secondary btn-sm col-2"
+					>
+						Login
+					</Link>
+					<Link to="/register" className="btn btn-dark btn-sm col-2">
+						Register
+					</Link>
+				</Row>
+			</div>
+		);
 	};
 
 	const getRowData = () => {
@@ -59,59 +83,68 @@ const AdminDashboard = () => {
 		});
 	};
 
-	return (
-		<Container fluid>
-			<NavBar />
-			<br />
-			<Row>
-				<Col>
-					{postData.length !== 0 ? (
-						<Card>
-							<div style={{ overflowX: 'auto' }}>
-								<div className="table-responsive">
-									<table className="table table-fixed">
-										<thead className="thead-dark">
-											<tr>
-												<th
-													scope="col"
-													className="col-3"
-												>
-													ID
-												</th>
-												<th
-													scope="col"
-													className="col-3"
-												>
-													Title
-												</th>
-												<th
-													scope="col"
-													className="col-3"
-												>
-													Desc
-												</th>
-												<th
-													scope="col"
-													className="col-3"
-												>
-													Action
-												</th>
-											</tr>
-										</thead>
-										<tbody>{getRowData()}</tbody>
-									</table>
+	const adminPage = () => {
+		return (
+			<Container fluid>
+				<Row>
+					<Col>
+						{postData.length !== 0 ? (
+							<Card>
+								<div style={{ overflowX: 'auto' }}>
+									<div className="table-responsive">
+										<table className="table table-fixed">
+											<thead className="thead-dark">
+												<tr>
+													<th
+														scope="col"
+														className="col-3"
+													>
+														ID
+													</th>
+													<th
+														scope="col"
+														className="col-3"
+													>
+														Title
+													</th>
+													<th
+														scope="col"
+														className="col-3"
+													>
+														Desc
+													</th>
+													<th
+														scope="col"
+														className="col-3"
+													>
+														Action
+													</th>
+												</tr>
+											</thead>
+											<tbody>{getRowData()}</tbody>
+										</table>
+									</div>
 								</div>
-							</div>
-						</Card>
-					) : (
-						<Card>
-							<CardBody>No Posts Available!</CardBody>
-						</Card>
-					)}
-				</Col>
-			</Row>
-		</Container>
-	);
+							</Card>
+						) : (
+							<Card>
+								<CardBody>No Posts Available!</CardBody>
+							</Card>
+						)}
+					</Col>
+				</Row>
+			</Container>
+		);
+	};
+
+	const shouldRender = () => {
+		if (currentUser === null) {
+			return isLoggedIn();
+		}
+		return adminPage();
+	};
+
+	return shouldRender();
 };
 
 export default AdminDashboard;

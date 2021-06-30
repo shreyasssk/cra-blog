@@ -5,8 +5,6 @@ import ReactMarkDown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
-import NavBar from '../Navbar';
-
 const PostDetails = (props) => {
 	const location = useLocation();
 	const postData = location.state;
@@ -14,7 +12,6 @@ const PostDetails = (props) => {
 	return (
 		<div>
 			<Container fluid>
-				<NavBar />
 				<Row>
 					<Col className="col-lg mb-4">
 						<div

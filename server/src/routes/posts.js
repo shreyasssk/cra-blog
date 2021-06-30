@@ -1,6 +1,6 @@
-const express = require('express');
+const router = require('express').Router();
 const Posts = require('../models/posts');
-const router = express.Router();
+const verify = require('../components/verifyToken');
 
 router.get('/', async (req, res) => {
 	try {
@@ -11,9 +11,11 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create/:id', verify, async (req, res) => {
+	const { id } = req.params;
 	const { title, desc, markdown, link } = req.body;
 	const post = new Posts({
+		userId: id,
 		title,
 		desc,
 		markdown,
@@ -32,6 +34,19 @@ router.get('/:id', async (req, res) => {
 
 	try {
 		const post = await Posts.findById(id);
+		res.status(201).send(post);
+	} catch (err) {
+		res.status(500).send({ message: err });
+	}
+});
+
+// Send posts uploaded by the specific user
+// pass userId as parameter
+router.get('/:id/currentuser', verify, async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		const post = await Posts.find({ userId: id });
 		res.status(201).send(post);
 	} catch (err) {
 		res.status(500).send({ message: err });
@@ -57,7 +72,7 @@ router.get('/:id', async (req, res) => {
 // 		});
 // });
 
-router.post('/:id/update', async (req, res) => {
+router.post('/:id/update', verify, async (req, res) => {
 	const { id } = req.params;
 
 	if (!req.body) {
@@ -86,7 +101,7 @@ router.post('/:id/update', async (req, res) => {
 // 	}
 // });
 
-router.post('/:id/delete', async (req, res) => {
+router.post('/:id/delete', verify, async (req, res) => {
 	const { id } = req.params;
 	try {
 		const removedPost = await Posts.findByIdAndDelete(id);
