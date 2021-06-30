@@ -11,9 +11,11 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.post('/create', verify, async (req, res) => {
+router.post('/create/:id', verify, async (req, res) => {
+	const { id } = req.params;
 	const { title, desc, markdown, link } = req.body;
 	const post = new Posts({
+		userId: id,
 		title,
 		desc,
 		markdown,
@@ -32,6 +34,19 @@ router.get('/:id', async (req, res) => {
 
 	try {
 		const post = await Posts.findById(id);
+		res.status(201).send(post);
+	} catch (err) {
+		res.status(500).send({ message: err });
+	}
+});
+
+// Send posts uploaded by the specific user
+// pass userId as parameter
+router.get('/:id/currentuser', verify, async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		const post = await Posts.find({ userId: id });
 		res.status(201).send(post);
 	} catch (err) {
 		res.status(500).send({ message: err });

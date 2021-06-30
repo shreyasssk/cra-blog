@@ -14,10 +14,9 @@ import ReactMarkDown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
-import NavBar from '../Navbar';
 import fetchPost from '../api/fetchPost';
 
-const EditPost = () => {
+const EditPost = ({ currentUser }) => {
 	const [formImage, setFormImage] = useState('');
 	const [formTitle, setFormTitle] = useState('');
 	const [formDesc, setFormDesc] = useState('');
@@ -55,8 +54,6 @@ const EditPost = () => {
 
 	return (
 		<Container fluid>
-			<NavBar />
-			<br />
 			<Row>
 				<Col className="col-lg mb-4">
 					<div

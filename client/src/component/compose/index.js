@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import {
 	Container,
 	Col,
@@ -15,13 +16,17 @@ import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 import fetchPost from '../api/fetchPost';
 
-import NavBar from '../Navbar';
-
-const ComposePage = () => {
+const ComposePage = ({ currentUser }) => {
 	const [formImage, setFormImage] = useState('');
 	const [formTitle, setFormTitle] = useState('');
 	const [formDesc, setFormDesc] = useState('');
 	const [formMarkdown, setFormMarkdown] = useState('');
+
+	if (currentUser !== null) {
+		console.log('I am logged in', currentUser);
+	} else {
+		return <Redirect to="/login" />;
+	}
 
 	const onFormSubmit = async (e) => {
 		var data = {
@@ -42,8 +47,6 @@ const ComposePage = () => {
 
 	return (
 		<Container fluid className="main-content-container px-4">
-			<NavBar />
-			<br />
 			<Row>
 				<Col className="col-lg mb-4">
 					<div

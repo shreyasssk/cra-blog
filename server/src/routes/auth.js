@@ -4,7 +4,16 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 
 // Validation
-const { userValidation } = require('../components/validation');
+const { userValidation, loginValidation } = require('../components/validation');
+
+router.get('/allusers', async (req, res) => {
+	try {
+		const posts = await User.find();
+		res.status(201).send(posts);
+	} catch (err) {
+		res.status(500).send({ message: err.message });
+	}
+});
 
 router.post('/register', async (req, res) => {
 	const { name, email, password } = req.body;
@@ -38,7 +47,7 @@ router.post('/register', async (req, res) => {
 	req.session.jwt = userToken;
 	try {
 		const savedUser = await user.save();
-		res.send({ user: user.id, email: user.email, name: user.name });
+		res.send({ id: user.id, email: user.email, name: user.name });
 	} catch (err) {
 		res.status(400).send(err);
 	}
@@ -47,7 +56,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
 	const { name, email, password } = req.body;
 	// Validate input
-	const { error } = userValidation(req.body);
+	const { error } = loginValidation(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
 	// Check if user is registered to the database
@@ -91,6 +100,16 @@ router.get('/currentuser', (req, res) => {
 		res.status(201).send({ currentUser: payload });
 	} catch (err) {
 		res.send({ currentUser: null });
+	}
+});
+
+router.post('/:id/delete', async (req, res) => {
+	const { id } = req.params;
+	try {
+		const removedPost = await User.findByIdAndDelete(id);
+		res.status(200).send('User deleted successfully!');
+	} catch (err) {
+		res.status(400).send({ message: err.message });
 	}
 });
 

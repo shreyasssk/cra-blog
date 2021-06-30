@@ -19,8 +19,19 @@ const connectToDB = async () => {
 connectToDB();
 
 const app = express();
+app.set('trust proxy', true);
 app.use(express.json());
-app.use(cors());
+app.use(
+	cors({
+		origin: true,
+		allowedHeaders: [
+			'Allow-Origin-With-Credentials',
+			'Content-Type',
+			'Access-Control-Allow-Origin',
+		],
+		credentials: true,
+	})
+);
 app.use(
 	cookieSession({
 		signed: false,
