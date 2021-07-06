@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import {
 	Row,
@@ -7,66 +7,28 @@ import {
 	CardImg,
 	CardBody,
 	CardTitle,
-	CardSubtitle,
 	CardText,
 	CardFooter,
-	Button,
 } from 'shards-react';
-import postsApi from '../api/fetchPost';
 
 const PostList = () => {
-	const [postsData, setPostsData] = useState([]);
-
-	useEffect(() => {
-		const getPosts = async () => {
-			const fetchedPosts = await postsApi.get('/posts');
-			setPostsData(fetchedPosts.data);
-		};
-		getPosts();
-	}, []);
-
-	const dateFormater = (x) => {
-		const date = new Date(x);
-		return date.toDateString();
-	};
-
-	const showPosts = () => {
-		return postsData.map((e) => {
-			return (
-				<Col key={e.id} lg="3" md="6" sm="12" className="mb-4">
+	return (
+		<div>
+			<Row>
+				<Col lg="3" md="6" sm="12" className="mb-4">
 					<Card>
-						<CardImg src={e.link} />
+						<CardImg src="" />
 						<CardBody>
-							<CardTitle>{e.title}</CardTitle>
-							<CardText>{e.desc.substring(0, 250)}</CardText>
-							<Link
-								className="btn btn-dark"
-								to={{
-									pathname: `/posts/${e.id}`,
-									state: e,
-								}}
-							>
-								Read more
-							</Link>
+							<CardTitle>Title of the Blog</CardTitle>
+							<CardText>Description of the Blog Post!</CardText>
+							<Link className="btn btn-dark">Read more</Link>
 						</CardBody>
 						<CardFooter>
-							Created on: {dateFormater(e.createdAt)}
+							Created on: Created On: 2021-06-28
 						</CardFooter>
 					</Card>
 				</Col>
-			);
-		});
-	};
-
-	return (
-		<div>
-			{postsData.length !== 0 ? (
-				<Row>{showPosts()}</Row>
-			) : (
-				<Card>
-					<CardBody>No Posts Available!</CardBody>
-				</Card>
-			)}
+			</Row>
 		</div>
 	);
 };

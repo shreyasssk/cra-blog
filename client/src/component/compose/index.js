@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Redirect } from 'react-router-dom';
 import {
 	Container,
 	Col,
@@ -10,43 +9,12 @@ import {
 	FormInput,
 	FormTextarea,
 } from 'shards-react';
-import ReactMarkDown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
-import fetchPost from '../api/fetchPost';
-
-const ComposePage = ({ currentUser }) => {
+const ComposePage = () => {
 	const [formImage, setFormImage] = useState('');
 	const [formTitle, setFormTitle] = useState('');
 	const [formDesc, setFormDesc] = useState('');
 	const [formMarkdown, setFormMarkdown] = useState('');
-
-	if (currentUser !== null) {
-		console.log('I am logged in', currentUser);
-	} else {
-		return <Redirect to="/login" />;
-	}
-
-	const onFormSubmit = async (e) => {
-		var data = {
-			link: formImage,
-			title: formTitle,
-			desc: formDesc,
-			markdown: formMarkdown,
-		};
-
-		try {
-			const sentData = await fetchPost.post(
-				`/posts/create/${currentUser.id}`,
-				data
-			);
-			console.log(sentData.data);
-		} catch (err) {
-			console.log('Unable to send post', err);
-		}
-		console.log(data);
-	};
 
 	return (
 		<Container fluid className="main-content-container px-4">
@@ -66,7 +34,7 @@ const ComposePage = ({ currentUser }) => {
 						style={{ backgroundColor: '#f8f8ff' }}
 						className="jumbotron card jumbotron-fluid"
 					>
-						<Form onSubmit={onFormSubmit}>
+						<Form>
 							<FormGroup>
 								<label htmlFor="#title">Link :</label>
 								<FormInput
@@ -117,47 +85,8 @@ const ComposePage = ({ currentUser }) => {
 					</div>
 				</Col>
 			</Row>
-			<Row>
-				<Col className="col-lg mb-4">
-					<div
-						style={{ backgroundColor: '#f8f8ff' }}
-						className="jumbotron jumbotron-fluid"
-					>
-						<h1 className="display-4">Blog Preview</h1>
-						<br />
-
-						<img className="bg-img" src={formImage} alt="" />
-						<br />
-						<br />
-						<p>Created On: 2021-06-28</p>
-						<h1>{formTitle}</h1>
-						<p>{formDesc}</p>
-						<ReactMarkDown
-							children={formMarkdown}
-							components={Component}
-						/>
-					</div>
-				</Col>
-			</Row>
 		</Container>
 	);
-};
-
-const Component = {
-	code({ node, inline, className, children, ...props }) {
-		const match = /language-(\w+)/.exec(className || '');
-		return !inline && match ? (
-			<SyntaxHighlighter
-				style={a11yDark}
-				language={match[1]}
-				PreTag="div"
-				children={String(children).replace(/\n$/, '')}
-				{...props}
-			/>
-		) : (
-			<code className={className} {...props} />
-		);
-	},
 };
 
 export default ComposePage;

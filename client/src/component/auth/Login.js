@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
 import {
 	Container,
 	Row,
@@ -8,24 +7,13 @@ import {
 	Form,
 	FormGroup,
 	FormInput,
-	Alert,
 } from 'shards-react';
 
-import fetchPost from '../api/fetchPost';
-
-const Login = ({ currentUser }) => {
+const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [errors, setErrors] = useState('');
-
-	if (currentUser !== null) {
-		return <Redirect to="/" />;
-	} else {
-		console.log('I am not logged in');
-	}
 
 	const onLogin = async (e) => {
-		console.log('Logging in..');
 		e.preventDefault();
 
 		const payload = {
@@ -33,15 +21,6 @@ const Login = ({ currentUser }) => {
 			password,
 		};
 		console.log(payload);
-
-		try {
-			const response = await fetchPost.post('/auth/login', payload);
-			window.location.href = '/';
-			console.log('From response', response);
-		} catch (err) {
-			setErrors(err.response.data);
-			console.log(err.response);
-		}
 	};
 
 	return (
@@ -86,11 +65,6 @@ const Login = ({ currentUser }) => {
 								/>
 							</FormGroup>
 							<Button theme="dark">Login</Button>
-							<br />
-							<br />
-							{errors.length > 0 && (
-								<Alert theme="danger">{errors}</Alert>
-							)}
 						</Form>
 					</div>
 				</Col>

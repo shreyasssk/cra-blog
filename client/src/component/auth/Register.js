@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
 import {
 	Container,
 	Row,
@@ -8,25 +7,14 @@ import {
 	Form,
 	FormGroup,
 	FormInput,
-	Alert,
 } from 'shards-react';
 
-import fetchPost from '../api/fetchPost';
-
-const Register = ({ currentUser }) => {
+const Register = () => {
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [errors, setErrors] = useState('');
-
-	if (currentUser !== null) {
-		return <Redirect to="/" />;
-	} else {
-		console.log('I am not logged in');
-	}
 
 	const onRegister = async (e) => {
-		// history.push('/')
 		e.preventDefault();
 		const payload = {
 			name: username,
@@ -34,14 +22,6 @@ const Register = ({ currentUser }) => {
 			password,
 		};
 		console.log(payload);
-
-		try {
-			const response = await fetchPost.post('/auth/register', payload);
-			// console.log(response);
-		} catch (err) {
-			setErrors(err.response.data);
-			console.log(err.response.data);
-		}
 	};
 
 	return (
@@ -96,11 +76,6 @@ const Register = ({ currentUser }) => {
 								/>
 							</FormGroup>
 							<Button theme="dark">Register</Button>
-							<br />
-							<br />
-							{errors.length > 0 && (
-								<Alert theme="danger">{errors}</Alert>
-							)}
 						</Form>
 					</div>
 				</Col>
